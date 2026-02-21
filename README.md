@@ -1,8 +1,8 @@
-# GitRAG
+# RepoRAG
 
 **Production-grade local RAG system for chatting with any GitHub repository.**
 
-GitRAG ingests a local repository, builds a semantic + structural index using AST-aware chunking and hybrid search, and supports conversational multi-turn querying — all fully offline.
+RepoRAG ingests a local repository, builds a semantic + structural index using AST-aware chunking and hybrid search, and supports conversational multi-turn querying — all fully offline.
 
 ---
 
@@ -24,7 +24,7 @@ Three architectures were evaluated:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          GitRAG Pipeline                            │
+│                          RepoRAG Pipeline                            │
 │                                                                     │
 │  ┌──────────┐   ┌──────────────┐   ┌────────────┐   ┌───────────┐ │
 │  │  Ingest   │──▶│  AST Chunker │──▶│  Embedder  │──▶│   Index   │ │
