@@ -1,0 +1,161 @@
+# GitRAG Configuration
+# All paths are relative to the repository root unless absolute.
+
+ingest:
+  # Directories and patterns to ignore during ingestion
+  ignore_dirs:
+    - .git
+    - node_modules
+    - vendor
+    - __pycache__
+    - .venv
+    - venv
+    - dist
+    - build
+    - .tox
+    - .mypy_cache
+    - .pytest_cache
+    - target          # Rust/Java build output
+    - .next
+    - .nuxt
+  ignore_patterns:
+    - "*.pyc"
+    - "*.pyo"
+    - "*.so"
+    - "*.dylib"
+    - "*.dll"
+    - "*.exe"
+    - "*.o"
+    - "*.a"
+    - "*.lib"
+    - "*.bin"
+    - "*.dat"
+    - "*.db"
+    - "*.sqlite"
+    - "*.jpg"
+    - "*.jpeg"
+    - "*.png"
+    - "*.gif"
+    - "*.bmp"
+    - "*.ico"
+    - "*.svg"
+    - "*.woff"
+    - "*.woff2"
+    - "*.ttf"
+    - "*.eot"
+    - "*.mp3"
+    - "*.mp4"
+    - "*.avi"
+    - "*.mov"
+    - "*.zip"
+    - "*.tar"
+    - "*.gz"
+    - "*.rar"
+    - "*.7z"
+    - "*.lock"
+    - "package-lock.json"
+    - "yarn.lock"
+    - "*.min.js"
+    - "*.min.css"
+    - "*.map"
+  max_file_size_kb: 512  # Skip files larger than this
+
+chunking:
+  # Maximum tokens per chunk (soft limit — AST boundaries take priority)
+  max_chunk_tokens: 400
+  # Minimum tokens to form a standalone chunk
+  min_chunk_tokens: 30
+  # Lines of surrounding context to attach (imports, class header)
+  context_lines: 5
+  # Include docstrings/comments with their parent symbol
+  include_docstrings: true
+  # Include import statements as chunk context
+  include_imports: true
+
+embeddings:
+  # Local embedding model (sentence-transformers compatible)
+  model_name: "BAAI/bge-base-en-v1.5"
+  # Embedding dimensions (must match model)
+  dimensions: 768
+  # Batch size for encoding
+  batch_size: 64
+  # Device: cpu, cuda, mps (auto-detected if empty)
+  device: ""
+  # Normalize embeddings for cosine similarity
+  normalize: true
+  # Instruction prefix for query embeddings (model-specific)
+  query_prefix: "Represent this sentence for searching relevant code: "
+
+index:
+  # Vector store backend: chroma
+  vector_backend: "chroma"
+  # Persistence directory (relative to repo or absolute)
+  persist_dir: ".gitrag_index"
+  # Collection name in vector store
+  collection_name: "gitrag"
+
+retrieval:
+  # Number of candidates from vector search
+  vector_top_k: 50
+  # Number of candidates from BM25
+  bm25_top_k: 50
+  # Number of results after fusion
+  fusion_top_k: 30
+  # Number of results after reranking
+  rerank_top_k: 10
+  # Reciprocal Rank Fusion constant
+  rrf_k: 60
+  # Reranker model
+  reranker_model: "BAAI/bge-reranker-base"
+  # Enable/disable reranking (disable for faster but lower quality)
+  enable_reranking: true
+
+graph:
+  # Maximum hops for multi-hop reasoning
+  max_hops: 2
+  # Maximum nodes to expand per hop
+  max_expand_per_hop: 15
+  # Include file-level dependencies
+  file_level: true
+  # Include symbol-level call graph (more expensive)
+  symbol_level: false
+
+query:
+  # Intent classification thresholds
+  intent_classification: true
+  # Enable query reformulation for follow-ups
+  reformulation: true
+
+memory:
+  # Maximum conversation turns to keep in short-term buffer
+  max_turns: 20
+  # Enable retrieval-augmented memory for long conversations
+  augmented_memory: true
+  # Summary interval (summarize every N turns)
+  summary_interval: 5
+
+generation:
+  # LLM provider: ollama, openai_compatible
+  provider: "ollama"
+  # Model name
+  model: "llama3.1:8b"
+  # Ollama base URL
+  base_url: "http://localhost:11434"
+  # API key (for openai_compatible providers)
+  api_key: ""
+  # Temperature (low for deterministic, citation-grounded answers)
+  temperature: 0.1
+  # Maximum tokens in response
+  max_tokens: 2048
+  # Context window size of the model (for context budget)
+  context_window: 8192
+  # Enable context compression
+  context_compression: true
+  # Maximum context tokens to send (reserves space for response)
+  max_context_tokens: 6000
+
+evaluation:
+  # Enable evaluation metrics logging
+  enabled: false
+  # Output directory for evaluation results
+  output_dir: ".gitrag_eval"
