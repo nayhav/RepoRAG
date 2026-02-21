@@ -10,15 +10,8 @@ RepoRAG ingests a local repository, builds a semantic + structural index using A
 
 ### Design Decision
 
-Three architectures were evaluated:
 
-| Architecture | Retrieval Quality | Latency | Scalability | Complexity |
-|---|---|---|---|---|
-| A) Monolithic Pipeline | Medium | Good | Medium | Low |
-| **B) Microkernel + Plugin** | **High** | **Good** | **High** | **Medium** |
-| C) Event-Driven DAG | Highest | Mixed | High | High |
-
-**Selected: B) Microkernel + Plugin.** Each component (parser, embedder, retriever, generator) implements an abstract interface and is swappable without re-plumbing the pipeline. This avoids the rigidity of a monolith and the over-engineering of a DAG for a local tool.
+**Selected Architecture: B) Microkernel + Plugin.** Each component (parser, embedder, retriever, generator) implements an abstract interface and is swappable without re-plumbing the pipeline. This avoids the rigidity of a monolith and the over-engineering of a DAG for a local tool.
 
 ### System Diagram
 
