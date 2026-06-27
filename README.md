@@ -4,8 +4,6 @@
 
 RepoRAG ingests a local repository, builds a semantic + structural index using AST-aware chunking and hybrid search, and supports conversational multi-turn querying — all fully offline.
 
----
-
 ## Architecture
 
 ### Design Decision
@@ -60,9 +58,9 @@ LLM Generation (with citations)
 Answer + [file:line] Citations
 ```
 
----
 
-## Why AST-Aware Chunking?
+
+## AST-Aware Chunking
 
 Naive fixed-size chunking (e.g., 512-token windows with overlap) is fundamentally broken for code:
 
@@ -78,9 +76,8 @@ AST-aware chunking extracts **function, class, and method boundaries** directly 
 - Import context for dependency resolution
 - Structural metadata (symbol kind, parent class, line numbers)
 
----
 
-## Why Hybrid Search > Pure Vector?
+## Hybrid Search vs Pure Vector Search
 
 Pure vector search fails on:
 - **Exact symbol names**: "Where is `calculateTaxRate` defined?" — vector search may miss the exact token match.
@@ -330,3 +327,5 @@ Query reformulation detects follow-up queries (pronouns, short queries) and prep
 ## License
 
 MIT
+
+Note: Content is mine, reformatted using claude sonnet 4.6
