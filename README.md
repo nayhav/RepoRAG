@@ -1,19 +1,10 @@
 # RepoRAG
 
-**Production-grade local RAG system for chatting with any GitHub repository.**
-
-RepoRAG ingests a local repository, builds a semantic + structural index using AST-aware chunking and hybrid search, and supports conversational multi-turn querying — all fully offline.
-
-## Architecture
-
-### Design Decision
+*Production-grade local RAG system for chatting with any GitHub repository.* RepoRAG ingests a local repository, builds a semantic + structural index using AST-aware chunking and hybrid search, and supports conversational multi-turn querying — all fully offline.
 
 
 **Selected Architecture: B) Microkernel + Plugin.** Each component (parser, embedder, retriever, generator) implements an abstract interface and is swappable without re-plumbing the pipeline. This avoids the rigidity of a monolith and the over-engineering of a DAG for a local tool.
 
-
-
-### Data Flow
 
 ```
 Repository Files
@@ -57,7 +48,7 @@ LLM Generation (with citations)
     ▼
 Answer + [file:line] Citations
 ```
-
+Note: The above representation is created using GPT-5.5.
 
 
 ## AST-Aware Chunking
@@ -70,7 +61,7 @@ Naive fixed-size chunking (e.g., 512-token windows with overlap) is fundamentall
 4. **No structural metadata**: Fixed chunks can't carry symbol names, file paths, or dependency references.
 5. **Cross-language inconsistency**: Code structure varies by language; fixed windows ignore this.
 
-AST-aware chunking extracts **function, class, and method boundaries** directly from the parse tree, preserving:
+AST-aware chunking extracts function, class, and method boundaries directly from the parse tree, preserving:
 - Complete function/method bodies as atomic units
 - Docstrings attached to their parent symbols
 - Import context for dependency resolution
@@ -91,21 +82,6 @@ score(d) = Σ 1/(k + rank_i(d))  for each retriever i
 ```
 
 This is rank-based (not score-based), making it robust to different score distributions.
-
----
-
-## Technical Decisions
-
-| Decision | Choice | Justification |
-|---|---|---|
-| AST Parser | tree-sitter | Uniform multi-language support, fast C bindings, consistent node metadata |
-| Embedding Model | BAAI/bge-base-en-v1.5 | 768d, strong general performance, sentence-transformers compatible |
-| Vector DB | ChromaDB | Local-first, built-in persistence, metadata filtering, adequate for repo-scale |
-| BM25 | rank_bm25 | Simple, reliable, code-aware tokenization (camelCase/snake_case splitting) |
-| Reranker | BAAI/bge-reranker-base | Cross-encoder quality boost, bounded candidate set (≤30) |
-| Similarity | Cosine (normalized) | Standard for text embeddings, L2-normalized in store |
-| LLM | Ollama (local) | Fully offline, OpenAI-compatible API, any local model |
-| Graph | networkx DiGraph | Lightweight, file-level import resolution, BFS traversal |
 
 ---
 
@@ -267,6 +243,8 @@ gitrag/
 
 ---
 
+Note: The above representation is the work of Claude Opus 4.8
+
 ## Evaluation Framework
 
 Built-in metrics for measuring retrieval and generation quality:
@@ -324,8 +302,10 @@ Query reformulation detects follow-up queries (pronouns, short queries) and prep
 
 ---
 
+Note: Content is mine, reformatted in some parts using claude sonnet 4.6, unless mentioned otherwise.
+
 ## License
 
 MIT
 
-Note: Content is mine, reformatted using claude sonnet 4.6
+
